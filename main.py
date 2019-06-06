@@ -1,6 +1,7 @@
 import feedparser
 import requests
 import re
+from datetime import datetime
 
 """TheChive Automatic link creation
 
@@ -31,7 +32,6 @@ def make_branch_link(app_key, d):
     d['type'] = 2
 
     response = requests.post(url, json=d)
-
     print(response)
 
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
         # branch tags
         d['$canonical_url'] = x['link']
         d['$marketing_title'] = x['title']
-        #TODO: d['$alias'] = '-'.join(x['title'].lower().split(' ')[0:2]) + '-' + str(post_id)  # lord forgive me for my sins
+        d['$alias'] = '-'.join(x['title'].lower().split(' ')[0:2]) + '-' + datetime.today().strftime('%m%d%Y')  # lord forgive me for my sins
         # branch fallback urls
         d['$canonical_url'] = x['link']
         d['$android_url'] = x['link']
