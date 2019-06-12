@@ -30,9 +30,15 @@ def make_branch_link(app_key, d):
     d['branch_key'] = app_key
     d['~channel'] = 'facebook'  # this is what was happening before -- keeping it consistent
     d['type'] = 2
+    marketing_title = d['data']['$marketing_title']
+    # re.A == ascii only
+    # need to sanitize the input to remove all non asic alpha numeric
+    alias_alpha_numeric = re.sub(re.compile('([^\s\w]|_)+', re.A), '',marketing_title)
+    d['alias'] = '-'.join(alias_alpha_numeric.lower().split(' ')[0:2]) + '-' + datetime.today().strftime(
+        '%m%d%Y')  # lord forgive me for my sins
 
     response = requests.post(url, json=d)
-    print(response)
+    print(response.text)
 
 
 if __name__ == '__main__':
@@ -46,7 +52,6 @@ if __name__ == '__main__':
         # branch tags
         d['$canonical_url'] = x['link']
         d['$marketing_title'] = x['title']
-        d['$alias'] = '-'.join(x['title'].lower().split(' ')[0:2]) + '-' + datetime.today().strftime('%m%d%Y')  # lord forgive me for my sins
         # branch fallback urls
         d['$canonical_url'] = x['link']
         d['$android_url'] = x['link']
